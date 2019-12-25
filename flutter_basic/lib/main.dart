@@ -9,27 +9,82 @@ class QuoteApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Quote',
-      home: HomePage(),
+      home: StagefulHomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class Quote {
+  final String text;
+  final String author;
+
+  Quote(this.text, this.author);
+}
+
+class StagefulHomePage extends StatefulWidget {
+  @override
+  _StagefulHomePageState createState() => _StagefulHomePageState();
+}
+
+class _StagefulHomePageState extends State<StagefulHomePage> {
+  final _formkey = GlobalKey<FormState>();
+  String _inputQuote;
+  String _inputAuthor;
+  List<Quote> quotes = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Quote'),
-      ),
-      body: ListView(
-        children: <Widget>[
-          QuoteCard('อยู่ตรงไหนก็ไม่เห็นค่า อยู่ตรงหน้ายังไม่เห็นเลย', 'hoikhong'),
-          QuoteCard('หัวใจนะครับไม่ใช่หัวนมที่จะมาขยี้ให้ระบมแล้วจากไปปป', 'hoikhong'),
-          QuoteCard('เขาไม่ได้ละเลยนะครับ เขาแค่ไม่รักมึงเลยต่างหา', 'hoikohng'),
-          QuoteCard('ไปทำธุระ เรียกว่าลากิจ แต่เธอเดินออกไปจากชีวิตเรียกลาก่อน', 'hoikhong'),
-        ],
-      ),
-    );
+        appBar: AppBar(
+          title: Text('Quote'),
+        ),
+        body: Column(
+          children: <Widget>[
+            Form(
+              key: _formkey,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                        decoration: InputDecoration(labelText: 'Qoute'),
+                        onSaved: (String value) {
+                          _inputQuote = value;
+                        }),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Author'),
+                      onSaved: (String value) {
+                        _inputAuthor = value;
+                      },
+                    ),
+                    RaisedButton(
+                      onPressed: () {
+                        _formkey.currentState.save();
+                        setState(() {
+                        quotes.insert(0,Quote(_inputQuote, _inputAuthor));
+                        });
+                        _formkey.currentState.reset();
+                      },
+                      child: Text('Add'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: quotes.length == 0
+                  ? Center(
+                      child: Text('Empty'),
+                    )
+                  : ListView.builder(
+                      itemCount: quotes.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return QuoteCard(
+                            quotes[index].text, quotes[index].author);
+                      },
+                    ),
+            ),
+          ],
+        ));
   }
 }
 
@@ -49,15 +104,15 @@ class QuoteCard extends StatelessWidget {
       margin: EdgeInsets.all(8),
       child: Column(
         children: <Widget>[
-          Container(
-            height: 300,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(
-                        'https://storage.googleapis.com/autostation-com/2019/05/cb18b85e-ducati-elettrico-01-970x545.jpg'))),
-          ),
+          // Container(
+          //   height: 300,
+          //   decoration: BoxDecoration(
+          //       borderRadius: BorderRadius.circular(4),
+          //       image: DecorationImage(
+          //           fit: BoxFit.cover,
+          //           image: NetworkImage(
+          //               'https://storage.googleapis.com/autostation-com/2019/05/cb18b85e-ducati-elettrico-01-970x545.jpg'))),
+          // ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
