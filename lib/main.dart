@@ -21,18 +21,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  double sliderValue = 0.5;
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => SliderState(),
+    return MultiProvider(
       child: Scaffold(
-          appBar: AppBar(
-            title: Text('provider'),
-          ),
-          body: Column(
-            children: <Widget>[MyDisplay(), MySlider()],
-          )), 
+        appBar: AppBar(
+          title: Text('My Provider'),
+        ),
+        body: Center(
+            child: Column(
+          children: <Widget>[
+            MyDisPlay(),
+            MySlider(),
+          ],
+        )),
+      ), providers: <SingleChildCloneableWidget>[
+        ChangeNotifierProvider(create: (BuildContext context) => SliderState())
+      ],
     );
   }
 }
