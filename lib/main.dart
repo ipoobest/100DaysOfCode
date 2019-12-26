@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:provider_basic/slider_state.dart';
+import 'my_output.dart';
+import 'my_slider.dart';
 
 main() => runApp(App());
 
@@ -20,24 +24,15 @@ class _HomeState extends State<Home> {
   double sliderValue = 0.5;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('provider'),
-        ),
-        body: Column(
-          children: <Widget>[
-            Text('Value = ${sliderValue.toStringAsFixed(2)}'),
-            Slider(
-              min: 0,
-              max: 1,
-              value: sliderValue,
-              onChanged: (newValue) {
-                setState(() {
-                  sliderValue = newValue;
-                });
-              },
-            )
-          ],
-        ));
+    return ChangeNotifierProvider(
+      create: (_) => SliderState(),
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text('provider'),
+          ),
+          body: Column(
+            children: <Widget>[MyDisplay(), MySlider()],
+          )), 
+    );
   }
 }
